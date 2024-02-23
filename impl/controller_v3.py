@@ -6,8 +6,15 @@ from modules import spotify_module
 
 
 def main():
-    canvas_width = 64
-    canvas_height = 64
+    config = configparser.ConfigParser()
+    parsed_configs = config.read('../config.ini')
+
+    if len(parsed_configs) == 0:
+        print("no config file found")
+        sys.exit()
+        
+    canvas_width = config.getint('System', 'canvas_width', fallback=64)
+    canvas_height = config.getint('System', 'canvas_height', fallback=32)
 
     # get arguments
     parser = argparse.ArgumentParser(
@@ -31,12 +38,6 @@ def main():
     currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
     sys.path.append(currentdir+"/rpi-rgb-led-matrix/bindings/python")
 
-    config = configparser.ConfigParser()
-    parsed_configs = config.read('../config.ini')
-
-    if len(parsed_configs) == 0:
-        print("no config file found")
-        sys.exit()
 
     # connect to Spotify and create display image
     modules = { 'spotify' : spotify_module.SpotifyModule(config) }

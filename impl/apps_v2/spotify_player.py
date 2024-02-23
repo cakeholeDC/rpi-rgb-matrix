@@ -8,8 +8,10 @@ class SpotifyScreen:
 
         self.font = ImageFont.truetype("fonts/tiny.otf", 5)
 
-        self.canvas_width = 64
-        self.canvas_height = 64
+        # self.canvas_width = 64
+        # self.canvas_height = 64
+        self.canvas_height = config.getint('System', 'canvas_width', fallback=64)
+        self.canvas_width = config.getint('System', 'canvas_height', fallback=32)
         self.title_color = (255,255,255)
         self.artist_color = (255,255,255)
         self.play_color = (102, 240, 110)
