@@ -23,9 +23,9 @@ def clean(context):
         context.run(f"rm -rf .venv poetry.lock", pty=True)
 
 @task
-def emualte(context, emulate=True, fullscreen=False):
+def run64(context, emulate=True, fullscreen=False):
     """
-    emulates the RGB matrix
+    runs the 64x64 RGB matrix. emulation=True by default
     """
     with context.cd(APP_ROOT):
         emulate = "-e" if emulate else ''
@@ -33,11 +33,11 @@ def emualte(context, emulate=True, fullscreen=False):
         context.run(f"poetry run python controller_v3.py {emulate} {fullscreen}", pty=True)
 
 @task
-def half(context, emulate=True):
+def run32(context, emulate=True, fullscreen=False):
     """
-    emulates the RGB matrix; half size
+    runs the 64x32 RGB matrix. emulation=True by default
     """
     with context.cd(APP_ROOT):
         emulate = "-e" if emulate else ''
-        context.run(f"poetry run python controller_half.py {emulate}", pty=True)
-        # context.run(f"poetry run python controller_kc.py {emulate}")
+        fullscreen = "-f" if fullscreen else ''
+        context.run(f"poetry run python controller_62x32.py {emulate} {fullscreen}", pty=True)

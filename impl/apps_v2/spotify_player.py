@@ -1,6 +1,11 @@
+import configparser
 import numpy as np, requests, math, time, threading
 from PIL import Image, ImageFont, ImageDraw
 from io import BytesIO
+
+def random_color():
+    color = tuple(np.random.choice(range(256), size=3))
+    return color
 
 class SpotifyScreen:
     def __init__(self, config, modules, fullscreen):
@@ -108,7 +113,9 @@ class SpotifyScreen:
                     img = Image.open(BytesIO(response.content))
                     self.current_art_img = img.resize((48, 48), resample=Image.LANCZOS)
 
+                # a fullscreen frame for matrix
                 frame = Image.new("RGB", (self.canvas_width, self.canvas_height), (0,0,0))
+                # draw inside the frame
                 draw = ImageDraw.Draw(frame)
 
                 # exit early if fullscreen
@@ -158,11 +165,22 @@ class SpotifyScreen:
 
                 # y coordinate for progress_bar - pixels
                 line_y = 63 # 63 of 64 pixels
-                # progress bar / right side
+                # progress bar / right side (left, top, right, bottom)
                 draw.rectangle((0,line_y-1,63,line_y), fill=(0,100,255))
                 # progress bar / left side
                 draw.rectangle((0,line_y-1,0+round(((progress_ms / duration_ms) * 100) // 1.57), line_y), fill=self.play_color)
                 drawPlayPause(draw, self.is_playing, self.play_color)
+                
+
+                # progress bar / right side (left, top, right, bottom)
+                # draw.rectangle((0,0,64,1), fill=random_color(), width=1)
+                # draw.rectangle((0,1,64,2), fill=random_color(), width=1)
+                # draw.rectangle((0,2,64,3), fill=random_color(), width=1)
+
+                config = configparser.ConfigParser()
+                parsed_configs = config.read('../config.ini')
+                for i in range(0,config.getint('System', 'canvas_height', fallback=32)):
+                    draw.rectangle((0,i,config.getint('System', 'canvas_width', fallback=64),i+1), fill=random_color())
                 
                 return (frame, self.is_playing)
         else:
