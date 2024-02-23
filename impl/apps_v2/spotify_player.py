@@ -114,9 +114,11 @@ class SpotifyScreen:
                 # exit early if fullscreen
                 if self.current_art_img is not None:
                     if show_fullscreen:
+                        # the image, fullscreen (left, top) => px
                         frame.paste(self.current_art_img, (0,0))
                         return (frame, self.is_playing)
                     else:
+                        # the image, offset (left, top) => px
                         frame.paste(self.current_art_img, (8,14))
 
                 freeze_title = self.title_animation_cnt == 0 and self.artist_animation_cnt > 0
@@ -149,11 +151,16 @@ class SpotifyScreen:
                 else:
                     draw.text((x_offset-self.artist_animation_cnt, 7), self.current_artist, self.artist_color, font = self.font)
 
-                draw.rectangle((0,0,0,12), fill=(0,0,0))
-                draw.rectangle((52,0,63,12), fill=(0,0,0))
+                # The gap in the top left, next to the title/artist (left, top, right, bottom)
+                draw.rectangle((0,0,0,12), fill=(100,0,100)) # (left, top, right, bottom)
+                # the rectangle around the play/pause icon (left, top, right, bottom)
+                draw.rectangle((52,0,63,12), fill=(0,255,0)) # (left, top, right, bottom)
 
-                line_y = 63
-                draw.rectangle((0,line_y-1,63,line_y), fill=(100,100,100))
+                # y coordinate for progress_bar - pixels
+                line_y = 63 # 63 of 64 pixels
+                # progress bar / right side
+                draw.rectangle((0,line_y-1,63,line_y), fill=(0,100,255))
+                # progress bar / left side
                 draw.rectangle((0,line_y-1,0+round(((progress_ms / duration_ms) * 100) // 1.57), line_y), fill=self.play_color)
                 drawPlayPause(draw, self.is_playing, self.play_color)
                 
