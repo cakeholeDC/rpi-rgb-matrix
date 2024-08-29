@@ -51,10 +51,10 @@ def main():
     # setup matrix
     options = RGBMatrixOptions()
     options.hardware_mapping = config.get('Matrix', 'hardware_mapping', fallback='regular')
-    # options.rows = 32
-    # options.cols = 64
-    options.rows = canvas_height
-    options.cols = canvas_width
+    options.rows = 32
+    options.cols = 64
+    # options.rows = canvas_height
+    # options.cols = canvas_width
     options.brightness = 100 if is_emulated else config.getint('Matrix', 'brightness', fallback=100)
     options.gpio_slowdown = config.getint('Matrix', 'gpio_slowdown', fallback=1)
     options.limit_refresh_rate_hz = config.getint('Matrix', 'limit_refresh_rate_hz', fallback=150)
