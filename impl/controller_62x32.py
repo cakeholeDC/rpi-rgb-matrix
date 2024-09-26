@@ -1,7 +1,8 @@
 import os, inspect, sys, math, time, configparser, argparse
 from PIL import Image
 
-from apps_v2 import spotify_player
+from apps_v2 import spotify_player_32 as spotify_player
+# from apps_v2 import weather
 from modules import spotify_module
 
 
@@ -43,19 +44,28 @@ def main():
     modules = { 'spotify' : spotify_module.SpotifyModule(config) }
     app_list = [ spotify_player.SpotifyScreen(config, modules, is_full_screen_always) ]
 
+    # weather
+    # modules = { 'weather' : weather_module.WeatherModule(config) }
+    # app_list = [ weather.WeatherScreen(config, modules, is_full_screen_always) ]
+
     # setup matrix
     options = RGBMatrixOptions()
     options.hardware_mapping = config.get('Matrix', 'hardware_mapping', fallback='regular')
-    options.rows = canvas_width
-    options.cols = canvas_height
+    options.rows = 32
+    options.cols = 64
+    # options.rows = canvas_height
+    # options.cols = canvas_width
     options.brightness = 100 if is_emulated else config.getint('Matrix', 'brightness', fallback=100)
     options.gpio_slowdown = config.getint('Matrix', 'gpio_slowdown', fallback=1)
-    options.limit_refresh_rate_hz = config.getint('Matrix', 'limit_refresh_rate_hz', fallback=0)
+    options.limit_refresh_rate_hz = config.getint('Matrix', 'limit_refresh_rate_hz', fallback=150)
     options.drop_privileges = False
     matrix = RGBMatrix(options = options)
 
+    # timeout on no playback
     shutdown_delay = config.getint('Matrix', 'shutdown_delay', fallback=600)
+    # when no playback, blank_screen shows
     black_screen = Image.new("RGB", (canvas_width, canvas_height), (0,0,0))
+    # stores last acive time for playback timeout
     last_active_time = math.floor(time.time())
 
     # generate image
